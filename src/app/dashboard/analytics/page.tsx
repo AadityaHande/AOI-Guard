@@ -24,7 +24,9 @@ export default function AnalyticsPage() {
 
       <div id="analytics-content" className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-8">
-            <AnalyticsCharts trendData={trendData} verdictData={verdictData} />
+            <div className="bg-card/60 backdrop-blur-sm border border-border/50 rounded-lg p-6">
+              <AnalyticsCharts trendData={trendData} verdictData={verdictData} />
+            </div>
             <HistoricalDataTable scanHistory={recentScans} />
         </div>
         <div className="lg:col-span-1">

@@ -8,8 +8,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' });
 
 export const metadata: Metadata = {
-  title: 'AOI-Guard',
+  title: 'AOI-Guard | IC Authenticity Verification',
   description: 'A high-clarity visual command center that shows authenticity verdicts in real-time — powered by AI but made for humans.',
+  manifest: '/site.webmanifest',
+  themeColor: '#3b82f6',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
 };
 
 export default function RootLayout({

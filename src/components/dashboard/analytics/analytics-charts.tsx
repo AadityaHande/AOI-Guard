@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -8,7 +7,7 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart";
-import { Pie, PieChart, Line, LineChart, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Pie, PieChart, Line, LineChart, Cell, XAxis, CartesianGrid } from "recharts";
 import { trendData as defaultTrendData, verdictData as defaultVerdictData } from "@/lib/data";
 
 const trendChartConfig = {
@@ -40,17 +39,16 @@ type AnalyticsChartsProps = {
 
 export function AnalyticsCharts({ trendData, verdictData }: AnalyticsChartsProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 h-full w-full">
-      <Card className="bg-transparent border-0 shadow-none flex flex-col">
-        <CardHeader className="p-4">
-          <CardTitle>Verdict Distribution</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 pb-4 flex items-center justify-center">
+    <div className="grid gap-8 md:grid-cols-2">
+      {/* Verdict Distribution - Pie Chart */}
+      <div className="flex flex-col">
+        <h3 className="text-lg font-semibold mb-4 font-headline">Verdict Distribution</h3>
+        <div className="flex-1 flex items-center justify-center min-h-[250px]">
           <ChartContainer
             config={verdictChartConfig}
-            className="aspect-square w-full max-w-[280px] sm:max-w-[300px]"
+            className="w-full h-[250px]"
           >
-            <PieChart>
+            <PieChart width={250} height={250}>
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
@@ -59,36 +57,38 @@ export function AnalyticsCharts({ trendData, verdictData }: AnalyticsChartsProps
                 data={verdictData}
                 dataKey="count"
                 nameKey="verdict"
+                cx="50%"
+                cy="50%"
                 innerRadius={60}
-                strokeWidth={5}
-                stroke="hsl(var(--card))"
+                outerRadius={90}
+                strokeWidth={2}
+                stroke="hsl(var(--background))"
               >
-                {verdictData.map((entry) => (
-                  <Cell key={`cell-${entry.verdict}`} fill={entry.fill} />
+                {verdictData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
               </Pie>
               <ChartLegend
                 content={<ChartLegendContent nameKey="verdict" />}
-                className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                className="flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
               />
             </PieChart>
           </ChartContainer>
-        </CardContent>
-      </Card>
-      <Card className="bg-transparent border-0 shadow-none flex flex-col">
-        <CardHeader className="p-4">
-          <CardTitle>Authenticity Trend</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1">
-          <ChartContainer config={trendChartConfig} className="w-full h-full min-h-[200px] max-h-[280px]">
+        </div>
+      </div>
+
+      {/* Authenticity Trend - Line Chart */}
+      <div className="flex flex-col">
+        <h3 className="text-lg font-semibold mb-4 font-headline">Authenticity Trend</h3>
+        <div className="flex-1 min-h-[250px]">
+          <ChartContainer config={trendChartConfig} className="w-full h-[250px]">
             <LineChart
-              accessibilityLayer
               data={trendData}
               margin={{
-                left: -20,
-                right: 20,
-                top: 10,
-                bottom: 10
+                left: 12,
+                right: 12,
+                top: 12,
+                bottom: 12
               }}
             >
               <defs>
@@ -106,7 +106,13 @@ export function AnalyticsCharts({ trendData, verdictData }: AnalyticsChartsProps
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+              <XAxis 
+                dataKey="date" 
+                tickLine={false} 
+                axisLine={false} 
+                tickMargin={8}
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              />
               <ChartTooltip
                 cursor={true}
                 content={<ChartTooltipContent indicator="line" />}
@@ -122,8 +128,8 @@ export function AnalyticsCharts({ trendData, verdictData }: AnalyticsChartsProps
               />
             </LineChart>
           </ChartContainer>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

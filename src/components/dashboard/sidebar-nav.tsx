@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", badge: null },
@@ -42,15 +43,29 @@ export function SidebarNav() {
     <>
       <SidebarHeader className="border-b border-border/50 p-4">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <Logo className="h-10 w-10 text-primary" />
+          <div className="relative flex-shrink-0">
+            <Image 
+              src="/app_icon.png" 
+              alt="AOI-Guard Logo" 
+              width={40} 
+              height={40}
+              className="object-contain"
+              onError={(e) => {
+                // Fallback to Logo component if image fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                const fallback = target.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'block';
+              }}
+            />
+            <Logo className="h-10 w-10 text-primary hidden" style={{ display: 'none' }} />
             <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-primary animate-pulse" />
           </div>
           <div className="flex flex-col">
-            <h3 className="font-bold tracking-tight text-xl font-headline bg-gradient-to-r from-primary to-chart-3 bg-clip-text text-transparent">
+            <h3 className="font-bold tracking-tight text-xl font-headline text-primary whitespace-nowrap leading-none">
               AOI-Guard
             </h3>
-            <p className="text-[10px] text-muted-foreground">v1.0 • Active</p>
+            <span className="text-[10px] text-muted-foreground/80 whitespace-nowrap">v1.0 • Active</span>
           </div>
         </div>
       </SidebarHeader>

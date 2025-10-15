@@ -15,13 +15,29 @@ import { Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Scan } from "@/lib/data";
+import { useState } from "react";
 
 export function RecentScansTable({ recentScans }: { recentScans: Scan[]}) {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(recentScans.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentScans = recentScans.slice(startIndex, endIndex);
 
   const handleViewClick = (e: React.MouseEvent, batchId: string) => {
     e.stopPropagation();
     router.push(`/dashboard/report/${batchId}`);
+  };
+
+  const handlePrevious = () => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentPage(prev => Math.min(totalPages, prev + 1));
   };
 
   return (
@@ -42,7 +58,7 @@ export function RecentScansTable({ recentScans }: { recentScans: Scan[]}) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentScans.slice(0, 5).map((scan) => (
+              {currentScans.map((scan) => (
                 <TableRow
                   key={scan.batchId + scan.time}
                   className="cursor-pointer"
@@ -77,7 +93,7 @@ export function RecentScansTable({ recentScans }: { recentScans: Scan[]}) {
                       size="sm"
                       onClick={(e) => handleViewClick(e, scan.batchId)}
                     >
-                      <Eye className="mr-2 h-4 w-4" />
+                      <Eye className="mr-4 w-4" />
                       View
                     </Button>
                   </TableCell>
@@ -88,11 +104,25 @@ export function RecentScansTable({ recentScans }: { recentScans: Scan[]}) {
         </CardContent>
          <CardFooter className="flex items-center justify-between pt-6">
           <div className="text-xs text-muted-foreground">
-            Showing <strong>1-5</strong> of <strong>{recentScans.length}</strong> scans
+            Showing <strong>{startIndex + 1}-{Math.min(endIndex, recentScans.length)}</strong> of <strong>{recentScans.length}</strong> scans
           </div>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" disabled>Previous</Button>
-            <Button size="sm" variant="outline">Next</Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              disabled={currentPage === 1}
+              onClick={handlePrevious}
+            >
+              Previous
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline"
+              disabled={currentPage === totalPages}
+              onClick={handleNext}
+            >
+              Next
+            </Button>
           </div>
         </CardFooter>
       </Card>

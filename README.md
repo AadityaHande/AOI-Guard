@@ -1,15 +1,11 @@
-# 🛡️ AOI-Guard - AI-Powered IC Authenticity Verification# Firebase Studio
+# 🛡️ AOI-Guard - AI-Powered IC Authenticity Verification
 
+> **High-clarity visual command center for real-time IC authenticity detection — powered by AI, made for humans.**
 
-
-> **High-clarity visual command center for real-time IC authenticity detection — powered by AI, made for humans.**This is a NextJS starter in Firebase Studio.
-
-
-
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)To get started, take a look at src/app/page.tsx.
-
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![SIH](https://img.shields.io/badge/SIH-2024-orange)
 
 ---
 

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="1" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer hexagonal shield -->
+  <path 
+    d="M24 4 L36 10 L36 26 L24 32 L12 26 L12 10 Z" 
+    fill="none" 
+    stroke="url(#logoGradient)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  
+  <!-- Inner circuit pattern -->
+  <path 
+    d="M24 12 L28 14 L28 22 L24 24 L20 22 L20 14 Z" 
+    fill="none"
+    stroke="#3b82f6"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  
+  <!-- Scanning line effect -->
+  <line 
+    x1="18" 
+    y1="18" 
+    x2="30" 
+    y2="18" 
+    stroke="#3b82f6" 
+    stroke-width="1.5" 
+    opacity="0.8"
+    stroke-linecap="round"
+  />
+  
+  <!-- Central chip dot -->
+  <circle 
+    cx="24" 
+    cy="18" 
+    r="2.5" 
+    fill="#3b82f6"
+    opacity="0.9"
+  />
+  
+  <!-- Connection points (left and right) -->
+  <circle cx="16" cy="18" r="1.5" fill="#3b82f6" />
+  <circle cx="32" cy="18" r="1.5" fill="#3b82f6" />
+  
+  <!-- Verification checkmark -->
+  <path 
+    d="M21 26 L23 28 L27 24" 
+    fill="none" 
+    stroke="#3b82f6" 
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

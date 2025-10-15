@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail } from "lucide-react";
-import Image from "next/image";
+import { Mail, Play } from "lucide-react";
 
 const faqItems = [
   {
@@ -48,22 +47,32 @@ export default function HelpPage() {
             <Card className="bg-card/60 backdrop-blur-sm shadow-cyan">
                 <CardHeader>
                     <CardTitle>How AOI-Guard Works</CardTitle>
+                    <CardDescription>3-minute demo showcasing our AI-powered IC authenticity verification</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="relative aspect-video overflow-hidden rounded-lg">
-                        <Image 
-                            src="https://picsum.photos/seed/workflow/1280/720"
-                            alt="AOI-Guard Workflow"
-                            layout="fill"
-                            objectFit="cover"
-                            data-ai-hint="flowchart diagram"
-                        />
-                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <p className="text-lg font-semibold text-white">Video / GIF Placeholder</p>
+                    <div className="relative aspect-video overflow-hidden rounded-lg bg-gradient-to-br from-primary/20 via-background to-primary/10 border border-primary/20 group cursor-pointer hover:border-primary/40 transition-all">
+                        {/* Video placeholder with play button */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <div className="relative">
+                                {/* Play button circle */}
+                                <div className="w-20 h-20 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all duration-300 shadow-lg shadow-primary/50">
+                                    <Play className="h-10 w-10 text-primary-foreground ml-1" fill="currentColor" />
+                                </div>
+                                {/* Pulse ring animation */}
+                                <div className="absolute inset-0 w-20 h-20 rounded-full bg-primary/30 animate-ping"></div>
+                            </div>
+                            <p className="mt-6 text-lg font-semibold text-foreground">Watch Demo Video</p>
+                            <p className="text-sm text-muted-foreground">Click to play • 3:45 mins</p>
+                        </div>
+                        
+                        {/* Background pattern */}
+                        <div className="absolute inset-0 opacity-10">
+                            <div className="absolute top-4 left-4 w-32 h-32 border-2 border-primary/30 rounded-lg rotate-12"></div>
+                            <div className="absolute bottom-4 right-4 w-24 h-24 border-2 border-primary/30 rounded-full"></div>
                         </div>
                     </div>
-                    <p className="mt-4 text-muted-foreground">
-                        This short guide demonstrates the end-to-end process from uploading an IC image to receiving a detailed authenticity report. It covers the automated OCR, AI analysis, and data comparison steps.
+                    <p className="mt-4 text-muted-foreground text-sm">
+                        Watch our concise demonstration of the complete workflow: from uploading IC images through AI-powered analysis to generating detailed authenticity reports with actionable insights.
                     </p>
                 </CardContent>
             </Card>

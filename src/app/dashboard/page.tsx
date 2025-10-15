@@ -87,7 +87,7 @@ export default function DashboardPage() {
           <div className="space-y-6 lg:col-span-3">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <UploadCard onScanComplete={handleScanComplete} />
-              <div className="border-border/50 bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-xl rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20">
+              <div className="border border-border/50 bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-xl rounded-lg p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20">
                 <AnalyticsCharts trendData={trendData} verdictData={verdictData} />
               </div>
             </div>
