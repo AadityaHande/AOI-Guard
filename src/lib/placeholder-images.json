@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "ic-image-1",
+      "description": "A close-up of a genuine integrated circuit.",
+      "imageUrl": "https://picsum.photos/seed/1/600/400",
+      "imageHint": "circuit board"
+    },
+    {
+      "id": "ic-image-2",
+      "description": "A close-up of a counterfeit integrated circuit.",
+      "imageUrl": "https://picsum.photos/seed/2/600/400",
+      "imageHint": "integrated circuit"
+    },
+    {
+      "id": "ic-image-3",
+      "description": "A close-up of a suspicious integrated circuit.",
+      "imageUrl": "https://picsum.photos/seed/3/600/400",
+      "imageHint": "microchip"
+    },
+    {
+      "id": "user-avatar",
+      "description": "Avatar for a QA engineer.",
+      "imageUrl": "https://picsum.photos/seed/user-avatar/40/40",
+      "imageHint": "person portrait"
+    }
+  ]
+}

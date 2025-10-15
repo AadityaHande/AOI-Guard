@@ -1,0 +1,217 @@
+🌐 AOI-GUARD WEBSITE — FRONTEND BLUEPRINT
+
+(Next.js + Tailwind + Shadcn UI)
+
+🧭 OVERVIEW
+
+The AOI-Guard website is the control centre for QA teams and engineers.
+It lets users upload IC images, view detection results, monitor batch analytics, and manage OEM data — all through a clean, futuristic dashboard.
+
+🗂️ PAGE-LEVEL STRUCTURE
+/ (Login Page)
+/dashboard
+/report/[batchID]
+/oem-data
+/analytics
+/settings
+/help (optional)
+
+🔐 1️⃣ LOGIN PAGE → /
+
+Purpose:
+To authenticate QA staff or admin before accessing the dashboard.
+
+Core Features:
+
+Username + Password login form
+
+Role-based redirect (QA → Dashboard, Admin → OEM Data / Analytics)
+
+Forgot Password (optional future addition)
+
+Loading animation: “Initializing AOI-Guard Interface...”
+
+Background: subtle dark grid animation with glowing scanning lines.
+
+UI Components:
+
+Logo + System name (AOI-Guard)
+
+FormCard (Shadcn Card + Input + Button)
+
+Subtle circuit pattern background (SVG overlay)
+
+📊 2️⃣ DASHBOARD PAGE → /dashboard
+
+Purpose:
+The central workspace for QA staff — view batches, upload ICs, see live status, and quick stats.
+
+Sections:
+
+Top Navbar:
+
+Logo, user avatar, notifications bell, dark/light mode toggle.
+
+Batch Summary Cards:
+
+Total scanned | Genuine | Fake | Suspicious | Last updated
+
+Upload Card (Main CTA):
+
+Drag & Drop zone
+
+“Upload Image Batch” button → triggers backend scan API
+
+Animated progress indicator (“Analyzing IC batch…”)
+
+Recent Results Table:
+
+Columns: IC ID | Batch | Verdict | Score | Timestamp | View
+
+Color-coded verdict badges (green/red/yellow)
+
+Alert Sidebar (right panel):
+
+Shows real-time alerts for fake/suspicious detections
+
+Click → jump to report page
+
+Extras:
+
+Toast notifications (“Batch #142 scanned successfully ✅”)
+
+Floating action button → “View All Reports”
+
+🧾 3️⃣ REPORT PAGE → /report/[batchID]
+
+Purpose:
+Deep dive into a specific batch or IC to review results.
+
+Sections:
+
+Image Viewer: Original + processed IC image side-by-side
+
+OCR Panel: Extracted marking text and logo
+
+OEM Panel: OEM reference sequence (fetched from database)
+
+Authenticity Score Bar: Animated horizontal bar (0-100%)
+
+Verdict Badge: Genuine / Fake / Suspicious
+
+Operator Notes Section: Add manual remarks or confirm result
+
+Download Report Button: Exports report PDF
+
+Optional Enhancement:
+
+“Compare visually” toggle → overlays OEM reference marking on IC image using opacity slider.
+
+🏗️ 4️⃣ OEM DATA PAGE → /oem-data
+
+Purpose:
+Admin page to manage OEM marking specifications and documents.
+
+Sections:
+
+OEM Data Table:
+| OEM Name | Part Number | Last Updated | Source | Actions |
+
+Upload OEM Document:
+
+Upload PDF/CSV file → adds to local DB
+
+Auto-Fetch OEM Data:
+
+Button → triggers backend scraper → updates automatically
+
+Search Bar:
+
+Filter by OEM or part number
+
+UI Details:
+
+Card-based layout with icons for each OEM
+
+“Updated X days ago” tag
+
+Status indicator for sync progress
+
+📈 5️⃣ ANALYTICS PAGE → /analytics
+
+Purpose:
+Visual insights into scanning trends, detection ratios, and anomalies.
+
+Sections:
+
+Time-Series Graph: Genuine vs Fake over time
+
+Pie Chart: Batch-wise percentage
+
+Heatmap / Line graph: IC anomalies per OEM
+
+Export Report: Generate PDF or CSV summary
+
+Insights Panel: AI-generated text like
+“⚠️ Spike in suspicious ICs detected in Vendor X this week.”
+
+UI Enhancements:
+
+Recharts / Chart.js integration
+
+Smooth gradient transitions
+
+Hover tooltips with exact values
+
+⚙️ 6️⃣ SETTINGS PAGE → /settings
+
+Purpose:
+System configuration and model retraining control (admin only).
+
+Sections:
+
+Retraining Panel:
+“Click to retrain model using last 100 manually verified results”
+→ Sends POST API call.
+
+Model Info:
+
+Current version
+
+Last retrained date
+
+Accuracy %
+
+Theme Toggle:
+
+Light/Dark/High-Contrast
+
+Logout Button
+
+🆘 7️⃣ HELP / ABOUT PAGE (Optional) → /help
+
+Purpose:
+To guide new operators and QA staff.
+
+Sections:
+
+Short video / GIF: “How AOI-Guard Works”
+
+FAQ accordion:
+
+“How do I upload a batch?”
+
+“What do the scores mean?”
+
+“How is OEM data fetched?”
+
+Contact Support / Email form
+
+💠 UI/UX ENHANCEMENTS
+Feature	Description
+✨ Hover Interactions	Buttons and cards glow with subtle cyan border
+🧭 Breadcrumb Navigation	Shows path → e.g., Dashboard › Batch 102 › Report
+🕓 Live Clock Widget	Top right corner for real-time timestamp
+📱 Responsive Design	Works seamlessly on tablets used in QA labs
+💬 Toast Alerts	Success, warning, or error messages after uploads
+🔄 Auto-Refresh Panel	Dashboard auto-updates every 30s during scanning
