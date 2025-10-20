@@ -7,6 +7,9 @@ type ImagePreviewProps = {
 };
 
 export function ImagePreview({ imageUrl, imageHint }: ImagePreviewProps) {
+  // Check if it's a data URI (base64)
+  const isDataUri = imageUrl?.startsWith('data:');
+  
   return (
     <Card className="bg-card/60 backdrop-blur-sm shadow-cyan overflow-hidden">
       <CardContent className="p-0">
@@ -17,6 +20,7 @@ export function ImagePreview({ imageUrl, imageHint }: ImagePreviewProps) {
           height={400}
           className="w-full h-auto object-cover"
           data-ai-hint={imageHint}
+          unoptimized={isDataUri}
         />
       </CardContent>
     </Card>

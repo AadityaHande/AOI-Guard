@@ -1,5 +1,8 @@
+'use client';
+
 import { notFound } from "next/navigation";
 import { detailedReportData } from "@/lib/data";
+import { getDetailedReport } from "@/lib/scan-storage";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download, Eye } from "lucide-react";
 import Link from "next/link";
@@ -9,14 +12,41 @@ import { DataComparison } from "@/components/dashboard/report/data-comparison";
 import { LlmReasoning } from "@/components/dashboard/report/llm-reasoning";
 import { OperatorActions } from "@/components/dashboard/report/operator-actions";
 import { VisualComparison } from "@/components/dashboard/report/visual-comparison";
+import { useEffect, useState, use } from "react";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default function ReportPage({ params }: Props) {
-  const { id } = params;
-  const report = detailedReportData[id as keyof typeof detailedReportData];
+  const { id } = use(params); // Unwrap the promise
+  const [report, setReport] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Try static data first
+    const staticReport = detailedReportData[id as keyof typeof detailedReportData];
+    if (staticReport) {
+      setReport(staticReport);
+      setLoading(false);
+      return;
+    }
+
+    // Try localStorage (from detect page)
+    const storedReport = getDetailedReport(id);
+    if (storedReport) {
+      setReport(storedReport);
+      setLoading(false);
+      return;
+    }
+
+    // Not found
+    setLoading(false);
+  }, [id]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-96">Loading report...</div>;
+  }
 
   if (!report) {
     notFound();
@@ -54,6 +84,7 @@ export default function ReportPage({ params }: Props) {
           <ImagePreview imageUrl={report.imageUrl} imageHint={report.imageHint} />
           <VisualComparison 
             icImageUrl={report.imageUrl} 
+            oemReferenceUrl={report.oemReferenceImageUrl || report.imageUrl}
             imageHint={report.imageHint}
           />
           <DataComparison ocrMarkings={report.ocrMarkings} oemData={report.oemData} />

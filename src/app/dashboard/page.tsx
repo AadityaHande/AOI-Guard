@@ -7,6 +7,7 @@ import { UploadCard } from '@/components/dashboard/upload-card';
 import { FloatingActions } from '@/components/floating-actions';
 import { useState, useEffect } from 'react';
 import { summaryData as initialSummary, recentScans as initialRecentScans, alerts as initialAlerts, verdictData as initialVerdictData, trendData } from "@/lib/data";
+import { getRecentScansForDashboard } from '@/lib/scan-storage';
 import { BatchScanAndSummaryOutput } from '@/ai/flows/batch-scan-summary';
 import { AnalyticsCharts } from '@/components/dashboard/analytics/analytics-charts';
 
@@ -19,6 +20,30 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Load recent scans from storage (detect page results)
+    const storedScans = getRecentScansForDashboard();
+    if (storedScans.length > 0) {
+      // Merge stored scans with initial scans, stored scans first (most recent)
+      setRecentScans([...storedScans, ...initialRecentScans]);
+      
+      // Create alerts for recent fake/suspicious detections
+      const recentAlerts = storedScans
+        .filter(scan => scan.status === 'Fake' || scan.status === 'Suspicious')
+        .slice(0, 3) // Only show top 3 most recent
+        .map((scan, index) => ({
+          id: Date.now() + index,
+          type: scan.status as 'Fake' | 'Suspicious',
+          message: scan.status === 'Fake'
+            ? `Critical: Counterfeit IC detected in ${scan.batchId}. Immediate inspection required.`
+            : `Warning: Suspicious IC markings detected in ${scan.batchId}. Manual verification recommended.`,
+          time: scan.time,
+        }));
+      
+      if (recentAlerts.length > 0) {
+        setAlerts([...recentAlerts, ...initialAlerts]);
+      }
+    }
   }, []);
 
   const handleScanComplete = (results: BatchScanAndSummaryOutput) => {

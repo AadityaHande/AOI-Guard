@@ -11,14 +11,14 @@ export const size = {
 
 export const contentType = 'image/png';
 
-// Image generation
+// Image generation - Enhanced with brighter cyan
 export default function Icon() {
   return new ImageResponse(
     (
       <div
         style={{
           fontSize: 24,
-          background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+          background: 'linear-gradient(135deg, #00E0FF 0%, #0891B2 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -56,7 +56,7 @@ export default function Icon() {
             strokeLinejoin="round"
           />
           
-          {/* Scanning line */}
+          {/* Scanning line - positioned mid */}
           <line
             x1="18"
             y1="18"
@@ -72,8 +72,8 @@ export default function Icon() {
           <circle cx="24" cy="18" r="2.5" fill="white" />
           
           {/* Connection points */}
-          <circle cx="16" cy="18" r="1.5" fill="white" />
-          <circle cx="32" cy="18" r="1.5" fill="white" />
+          <circle cx="18" cy="18" r="1.5" fill="white" opacity="0.8" />
+          <circle cx="30" cy="18" r="1.5" fill="white" opacity="0.8" />
           
           {/* Verification checkmark */}
           <path
@@ -83,6 +83,22 @@ export default function Icon() {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
+          />
+          
+          {/* Corner connection lines */}
+          <path
+            d="M20 14 L18 14 L18 12"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity="0.5"
+          />
+          <path
+            d="M28 14 L30 14 L30 12"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity="0.5"
           />
         </svg>
       </div>

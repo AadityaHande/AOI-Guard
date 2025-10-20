@@ -35,6 +35,17 @@ export function CommandPalette() {
       },
     },
     {
+      id: 'nav-detect',
+      label: 'Go to IC Detection',
+      description: 'Upload and scan IC images for authenticity',
+      icon: '🔍',
+      category: 'navigation',
+      action: () => {
+        router.push('/detect');
+        setOpen(false);
+      },
+    },
+    {
       id: 'nav-analytics',
       label: 'Go to Analytics',
       description: 'View detailed analytics and trends',

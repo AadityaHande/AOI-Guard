@@ -69,6 +69,9 @@ export default function LoginPage() {
           <Button asChild className="w-full hover:shadow-cyan focus:shadow-cyan transition-shadow duration-300">
             <Link href="/dashboard">Sign In</Link>
           </Button>
+          <Button asChild variant="outline" className="w-full hover:bg-primary/10 hover:border-primary transition-all duration-300">
+            <Link href="/detect">Try IC Detection</Link>
+          </Button>
           <div className="flex w-full justify-between text-xs text-muted-foreground">
             <Link href="#" className="hover:text-primary transition-colors">Forgot Password?</Link>
             <span>AOI-Guard v1.0</span>

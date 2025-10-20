@@ -17,9 +17,12 @@ interface VisualComparisonProps {
 
 export function VisualComparison({
   icImageUrl,
-  oemReferenceUrl = 'https://picsum.photos/seed/oem/600/400',
+  oemReferenceUrl,
   imageHint = 'circuit board',
 }: VisualComparisonProps) {
+  // Use the same IC image for OEM reference if not provided
+  const oemImage = oemReferenceUrl || icImageUrl;
+  const isDataUri = icImageUrl?.startsWith('data:');
   const [opacity, setOpacity] = useState([50]);
   const [isOverlay, setIsOverlay] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -66,6 +69,7 @@ export function VisualComparison({
                   fill
                   className="object-contain"
                   data-ai-hint={imageHint}
+                  unoptimized={isDataUri}
                 />
               </div>
               {/* OEM reference overlay */}
@@ -74,11 +78,12 @@ export function VisualComparison({
                 style={{ opacity: opacity[0] / 100 }}
               >
                 <Image
-                  src={oemReferenceUrl}
+                  src={oemImage}
                   alt="OEM Reference"
                   fill
                   className="object-contain"
                   data-ai-hint="reference image"
+                  unoptimized={isDataUri}
                 />
               </div>
               {/* Labels */}
@@ -99,6 +104,7 @@ export function VisualComparison({
                   fill
                   className="object-contain"
                   data-ai-hint={imageHint}
+                  unoptimized={isDataUri}
                 />
                 <div className="absolute left-2 top-2 rounded bg-background/80 px-2 py-1 text-xs">
                   IC Image
@@ -106,11 +112,12 @@ export function VisualComparison({
               </div>
               <div className="relative">
                 <Image
-                  src={oemReferenceUrl}
+                  src={oemImage}
                   alt="OEM Reference"
                   fill
                   className="object-contain"
                   data-ai-hint="reference image"
+                  unoptimized={isDataUri}
                 />
                 <div className="absolute left-2 top-2 rounded bg-primary/80 px-2 py-1 text-xs">
                   OEM Reference

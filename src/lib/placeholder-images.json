@@ -2,27 +2,27 @@
   "placeholderImages": [
     {
       "id": "ic-image-1",
-      "description": "A close-up of a genuine integrated circuit.",
-      "imageUrl": "https://picsum.photos/seed/1/600/400",
-      "imageHint": "circuit board"
+      "description": "A close-up of a genuine STM32 microcontroller chip with clear markings.",
+      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&q=80",
+      "imageHint": "genuine microcontroller chip with clear STM32 markings on black IC package"
     },
     {
       "id": "ic-image-2",
-      "description": "A close-up of a counterfeit integrated circuit.",
-      "imageUrl": "https://picsum.photos/seed/2/600/400",
-      "imageHint": "integrated circuit"
+      "description": "A close-up of a counterfeit IC chip showing suspicious markings and poor quality.",
+      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=600&h=400&fit=crop&q=80",
+      "imageHint": "counterfeit integrated circuit chip with blurred markings and surface defects"
     },
     {
       "id": "ic-image-3",
-      "description": "A close-up of a suspicious integrated circuit.",
-      "imageUrl": "https://picsum.photos/seed/3/600/400",
-      "imageHint": "microchip"
+      "description": "A close-up of a suspicious ATMEGA chip with minor inconsistencies in font.",
+      "imageUrl": "https://images.unsplash.com/photo-1597733336794-12d05021d510?w=600&h=400&fit=crop&q=80",
+      "imageHint": "suspicious microchip with slightly inconsistent marking font on ATMEGA package"
     },
     {
       "id": "user-avatar",
       "description": "Avatar for a QA engineer.",
-      "imageUrl": "https://picsum.photos/seed/user-avatar/40/40",
-      "imageHint": "person portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&q=80",
+      "imageHint": "professional person portrait for QA engineer avatar"
     }
   ]
 }

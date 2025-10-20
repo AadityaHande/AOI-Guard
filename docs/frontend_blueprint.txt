@@ -14,7 +14,7 @@ It lets users upload IC images, view detection results, monitor batch analytics,
 /oem-data
 /analytics
 /settings
-/help (optional)
+/help
 
 🔐 1️⃣ LOGIN PAGE → /
 

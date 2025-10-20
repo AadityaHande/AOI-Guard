@@ -21,13 +21,14 @@ import {
   Zap,
   ArrowLeftRight,
   FileText,
+  Scan,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard", badge: null },
+  { href: "/detect", icon: Scan, label: "IC Detection", badge: "Featured" },
   { href: "/dashboard/analytics", icon: BarChart3, label: "Analytics", badge: null },
   { href: "/dashboard/tools", icon: ArrowLeftRight, label: "Tools", badge: "New" },
   { href: "/dashboard/audit", icon: FileText, label: "Audit Log", badge: "New" },
@@ -44,22 +45,7 @@ export function SidebarNav() {
       <SidebarHeader className="border-b border-border/50 p-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-shrink-0">
-            <Image 
-              src="/app_icon.png" 
-              alt="AOI-Guard Logo" 
-              width={40} 
-              height={40}
-              className="object-contain"
-              onError={(e) => {
-                // Fallback to Logo component if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'block';
-              }}
-            />
-            <Logo className="h-10 w-10 text-primary hidden" style={{ display: 'none' }} />
-            <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-primary animate-pulse" />
+            <Logo className="h-10 w-10 text-primary" />
           </div>
           <div className="flex flex-col">
             <h3 className="font-bold tracking-tight text-xl font-headline text-primary whitespace-nowrap leading-none">

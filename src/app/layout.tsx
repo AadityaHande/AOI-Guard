@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${orbitron.variable} font-body`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange={false}
         >

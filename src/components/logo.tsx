@@ -20,22 +20,30 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
           <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
           <stop offset="100%" stopColor="currentColor" stopOpacity="0.6" />
         </linearGradient>
+        <filter id="logoGlow">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
       <style>
         {`
           @keyframes pulse-ring {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
           }
-          @keyframes scan-line {
-            0%, 100% { transform: translateY(0); opacity: 0.8; }
-            50% { transform: translateY(20px); opacity: 1; }
+          @keyframes scan-line-vertical {
+            0% { transform: translateY(-4px); opacity: 0.5; }
+            50% { transform: translateY(4px); opacity: 1; }
+            100% { transform: translateY(-4px); opacity: 0.5; }
           }
           .pulse-ring {
             animation: pulse-ring 3s ease-in-out infinite;
           }
-          .scan-line {
-            animation: scan-line 2s ease-in-out infinite;
+          .scan-line-vertical {
+            animation: scan-line-vertical 2s ease-in-out infinite;
           }
         `}
       </style>
@@ -55,34 +63,46 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
+        opacity="0.8"
       />
       
-      {/* Scanning line effect */}
-      <line 
-        x1="18" 
-        y1="18" 
-        x2="30" 
-        y2="18" 
-        stroke="currentColor" 
-        strokeWidth="1.5" 
-        opacity="0.8"
-        className="scan-line"
-      />
+      {/* Animated horizontal scanning line (like in the image) */}
+      <g className="scan-line-vertical">
+        <line 
+          x1="18" 
+          y1="18" 
+          x2="30" 
+          y2="18" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          filter="url(#logoGlow)"
+          opacity="0.9"
+        />
+      </g>
       
       {/* Central chip dot */}
       <circle 
         cx="24" 
         cy="18" 
-        r="2.5" 
+        r="2" 
         fill="currentColor"
+        className="scan-line-vertical"
         opacity="0.9"
       />
       
-      {/* Circuit connections */}
-      <line x1="24" y1="12" x2="24" y2="8" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="24" y1="24" x2="24" y2="28" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="20" y1="14" x2="16" y2="12" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="28" y1="14" x2="32" y2="12" stroke="currentColor" strokeWidth="1.5" />
+      {/* Verification checkmark */}
+      <path 
+        d="M21 26 L23 28 L27 24" 
+        stroke="currentColor" 
+        strokeWidth="2.5"
+        opacity="0.9"
+      />
+      
+      {/* Corner connection lines for circuit aesthetic */}
+      <path d="M20 14 L18 14 L18 12" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+      <path d="M28 14 L30 14 L30 12" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+      <path d="M20 22 L18 22 L18 24" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+      <path d="M28 22 L30 22 L30 24" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
     </svg>
   );
 }
