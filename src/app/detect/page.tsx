@@ -917,19 +917,18 @@ export default function DetectPage() {
                           </div>
                           <div className="font-mono text-base space-y-1 leading-relaxed">
                             {result.ocrMarkings.split('\n').map((line, i) => {
-                              const oem = result.oemDatasheetMarkings?.split('\n') || [];
-                              const oemNormalized = oem.join(' ');
-                              const ocrNormalized = result.ocrMarkings.split('\n').join(' ');
+                              const trimmedLine = line.trim();
+                              if (!trimmedLine) return null;
                               
-                              // Check if this line has discrepancies
-                              const isDifferent = !oemNormalized.includes(line.trim()) || ocrNormalized !== oemNormalized;
+                              const oemLines = result.oemDatasheetMarkings?.split('\n').map(l => l.trim()).filter(l => l) || [];
+                              const isDifferent = result.verdict === 'Fake' && !oemLines.includes(trimmedLine);
                               
                               return (
                                 <div 
                                   key={i}
                                   className={cn(
                                     'py-1 px-2 rounded transition-colors',
-                                    isDifferent && result.verdict === 'Fake' && 'bg-destructive/20 text-destructive font-semibold border-l-2 border-destructive'
+                                    isDifferent && 'bg-destructive/20 text-destructive font-semibold border-l-2 border-destructive'
                                   )}
                                 >
                                   {line || <span className="text-muted-foreground italic text-sm">(empty)</span>}
@@ -949,18 +948,18 @@ export default function DetectPage() {
                           </div>
                           <div className="font-mono text-base space-y-1 leading-relaxed">
                             {result.oemDatasheetMarkings.split('\n').map((line, i) => {
-                              const oem = result.oemDatasheetMarkings?.split('\n') || [];
-                              const oemNormalized = oem.join(' ');
-                              const ocrNormalized = result.ocrMarkings.split('\n').join(' ');
+                              const trimmedLine = line.trim();
+                              if (!trimmedLine) return null;
                               
-                              const isDifferent = ocrNormalized !== oemNormalized;
+                              const ocrLines = result.ocrMarkings.split('\n').map(l => l.trim()).filter(l => l);
+                              const isDifferent = result.verdict === 'Fake' && !ocrLines.includes(trimmedLine);
                               
                               return (
                                 <div 
                                   key={i}
                                   className={cn(
                                     'py-1 px-2 rounded transition-colors',
-                                    isDifferent && result.verdict === 'Fake' && 'bg-success/20 text-success font-semibold border-l-2 border-success'
+                                    isDifferent && 'bg-success/20 text-success font-semibold border-l-2 border-success'
                                   )}
                                 >
                                   {line || <span className="text-muted-foreground italic text-sm">(empty)</span>}
