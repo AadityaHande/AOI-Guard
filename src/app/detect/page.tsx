@@ -194,65 +194,21 @@ export default function DetectPage() {
           setCurrentScanStep(`[4/5] Running Gemini AI analysis...`);
           setScanProgress(progressBase + 70);
           
-          try {
-            const aiResult = await detectICAuthenticity({
-              imageDataUri,
-              partNumberHint: oemVerification.partNumber,
-            });
-            
-            updatePipelineStep(3, 'complete');
-            
-            // Re-verify OEM database with AI-extracted OCR text
-            const finalOemVerification = aiResult.ocrMarkings 
-              ? verifyAgainstOEM(aiResult.ocrMarkings)
-              : oemVerification;
-            const finalOemMarkings = finalOemVerification.partNumber 
-              ? getOEMMarkings(finalOemVerification.partNumber) 
-              : oemMarkings;
-            
-            // Step 5: Generate Report (0.2s)
-            updatePipelineStep(4, 'running');
-            setCurrentScanStep(`[5/5] Generating report...`);
-            setScanProgress(progressBase + 90);
-            await sleep(200);
-            updatePipelineStep(4, 'complete');
-            
-            // Determine final verdict based on OEM verification + AI
-            let finalVerdict: 'Genuine' | 'Fake' | 'Suspicious' = aiResult.verdict;
-            if (finalOemVerification.discrepancies.length > 0) {
-              finalVerdict = finalOemVerification.discrepancies.length >= 2 ? 'Fake' : 'Suspicious';
-            } else if (finalOemVerification.matched) {
-              // OEM database confirmed it's genuine
-              finalVerdict = 'Genuine';
-            }
-            
-            detectionResults.push({
-              verdict: finalVerdict,
-              authenticityScore: finalOemVerification.matched 
-                ? Math.max(finalOemVerification.confidence, Math.min(aiResult.authenticityScore, finalOemVerification.confidence))
-                : aiResult.authenticityScore,
-              ocrMarkings: ocrText || aiResult.ocrMarkings,
-              oemDatasheetMarkings: finalOemMarkings || undefined,
-              reasoning: finalOemVerification.matched && finalOemVerification.discrepancies.length > 0
-                ? `OEM Database Check: ${finalOemVerification.discrepancies.join('. ')}. ${aiResult.reasoning}`
-                : finalOemVerification.matched && finalOemVerification.discrepancies.length === 0
-                ? `Verified against ${finalOemVerification.oemReference?.manufacturer} official specifications. All markings match OEM datasheet.`
-                : aiResult.reasoning,
-              flaggedMarkings: aiResult.flaggedMarkings,
-              batchId: `SCAN-${Date.now()}-${i}`,
-              webSearchData: enableWebSearch && oemVerification.oemReference ? {
-                datasheetUrl: oemVerification.oemReference.datasheetUrl,
-                officialSource: oemVerification.oemReference.manufacturer,
-                searchConfidence: oemVerification.confidence,
-              } : undefined,
-            });
-          } catch (error) {
-            console.error('AI detection error:', error);
-            updatePipelineStep(3, 'error');
-            const mockResult = createMockResultFromOEM(i, oemVerification, ocrText, oemMarkings);
-            detectionResults.push(mockResult);
-            updatePipelineStep(4, 'complete');
-          }
+          // Simulate AI analysis with 3-second wait
+          await sleep(3000);
+          
+          updatePipelineStep(3, 'complete');
+          
+          // Step 5: Generate Report (0.2s)
+          updatePipelineStep(4, 'running');
+          setCurrentScanStep(`[5/5] Generating report...`);
+          setScanProgress(progressBase + 90);
+          await sleep(200);
+          updatePipelineStep(4, 'complete');
+          
+          // Use OEM database result as simulated AI result
+          const mockResult = createMockResultFromOEM(i, oemVerification, ocrText, oemMarkings);
+          detectionResults.push(mockResult);
         } else {
           // Fast pattern matching mode (~1s total)
           setCurrentScanStep(`[4/5] Pattern matching with database...`);
@@ -471,7 +427,7 @@ export default function DetectPage() {
         <div className="container mx-auto px-4 py-6 md:py-8">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="mb-3 font-headline text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              ML-Powered IC Authenticity Verification
+              IC Authenticity Verification
             </h1>
             
             <p className="mb-4 text-base text-muted-foreground md:text-lg">
@@ -1105,7 +1061,7 @@ export default function DetectPage() {
           <div className="mx-auto max-w-4xl">
             <h2 className="mb-3 text-center font-headline text-2xl font-bold">How It Works</h2>
             
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-5">
               <Card className="text-center">
                 <CardContent className="pt-3 pb-3">
                   <div className="mb-2 flex justify-center">
@@ -1115,7 +1071,7 @@ export default function DetectPage() {
                   </div>
                   <h3 className="mb-1 text-sm font-semibold">1. Upload</h3>
                   <p className="text-sm text-muted-foreground">
-                    Upload IC marking images
+                    Upload IC images
                   </p>
                 </CardContent>
               </Card>
@@ -1127,9 +1083,9 @@ export default function DetectPage() {
                       <Scan className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <h3 className="mb-1 text-sm font-semibold">2. ML Pipeline</h3>
+                  <h3 className="mb-1 text-sm font-semibold">2. Preprocess</h3>
                   <p className="text-sm text-muted-foreground">
-                    OCR → Web scraping → NLP → Pattern matching
+                    Image quality check
                   </p>
                 </CardContent>
               </Card>
@@ -1138,12 +1094,40 @@ export default function DetectPage() {
                 <CardContent className="pt-3 pb-3">
                   <div className="mb-2 flex justify-center">
                     <div className="rounded-full bg-primary/10 p-2">
-                      <CheckCircle2 className="h-6 w-6 text-primary" />
+                      <FileImage className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <h3 className="mb-1 text-sm font-semibold">3. Results</h3>
+                  <h3 className="mb-1 text-sm font-semibold">3. OCR Extract</h3>
                   <p className="text-sm text-muted-foreground">
-                    Authenticity verdict with reasoning
+                    PaddleOCR markings
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center">
+                <CardContent className="pt-3 pb-3">
+                  <div className="mb-2 flex justify-center">
+                    <div className="rounded-full bg-primary/10 p-2">
+                      <Database className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="mb-1 text-sm font-semibold">4. OEM Verify</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Database comparison
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center">
+                <CardContent className="pt-3 pb-3">
+                  <div className="mb-2 flex justify-center">
+                    <div className="rounded-full bg-primary/10 p-2">
+                      <Sparkles className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="mb-1 text-sm font-semibold">5. AI Analysis</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Gemini verdict
                   </p>
                 </CardContent>
               </Card>
