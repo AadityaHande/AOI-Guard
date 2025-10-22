@@ -505,11 +505,11 @@ export default function DetectPage() {
       <section className="container mx-auto px-4 py-4 md:py-6">
         <Card className="mx-auto max-w-4xl border-border/40 bg-card/50 backdrop-blur-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5 text-primary" />
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Upload className="h-6 w-6 text-primary" />
               Upload IC Images
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-base">
               System will scan markings, query OEM databases, and compare against datasheet specifications.
             </CardDescription>
           </CardHeader>
@@ -518,10 +518,10 @@ export default function DetectPage() {
             {uploadedFiles.length === 0 && (
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
                 <div className="mb-2 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <h3 className="text-base font-semibold">Try Sample ICs</h3>
+                  <Sparkles className="h-6 w-6 text-primary" />
+                  <h3 className="text-lg font-semibold">Try Sample ICs</h3>
                 </div>
-                <p className="mb-3 text-sm text-muted-foreground">
+                <p className="mb-3 text-base text-muted-foreground">
                   Test ML detection with realistic samples (Genuine / Fake)
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -531,7 +531,7 @@ export default function DetectPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => loadSampleIC(sample.id)}
-                      className="justify-start text-left h-auto py-2 text-sm"
+                      className="justify-start text-left h-auto py-2 text-base"
                     >
                       <span className="truncate">{sample.name}</span>
                     </Button>
@@ -564,16 +564,16 @@ export default function DetectPage() {
                   </div>
                   
                   <div>
-                    <p className="text-sm font-medium">
+                    <p className="text-base font-medium">
                       {isDragActive ? 'Drop files here' : 'Drag & drop IC images'}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
+                    <p className="mt-0.5 text-sm text-muted-foreground">
                       or click to browse
                     </p>
                   </div>
                   
-                  <Button variant="outline" type="button" size="sm" className="mt-1 h-8 text-xs">
-                    <Upload className="mr-1.5 h-3 w-3" />
+                  <Button variant="outline" type="button" size="sm" className="mt-1 h-10 text-sm">
+                    <Upload className="mr-1.5 h-4 w-4" />
                     Browse Files
                   </Button>
                 </div>
@@ -584,7 +584,7 @@ export default function DetectPage() {
             {uploadedFiles.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">
+                  <p className="text-base font-medium">
                     {uploadedFiles.length} image{uploadedFiles.length > 1 ? 's' : ''} selected
                   </p>
                   <Button
@@ -595,7 +595,7 @@ export default function DetectPage() {
                       setPreviews([]);
                       setResults([]);
                     }}
-                    className="h-8 text-sm"
+                    className="h-10 text-base"
                   >
                     Clear All
                   </Button>
@@ -618,7 +618,7 @@ export default function DetectPage() {
                         <X className="h-2.5 w-2.5" />
                       </Button>
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5">
-                        <p className="truncate text-xs text-white">{uploadedFiles[index].name}</p>
+                        <p className="truncate text-sm text-white">{uploadedFiles[index].name}</p>
                       </div>
                     </div>
                   ))}
@@ -637,8 +637,8 @@ export default function DetectPage() {
                       )} />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Web Scraping & NLP Parser</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-base font-medium">Web Scraping & NLP Parser</p>
+                      <p className="text-base text-muted-foreground">
                         Auto-query OEM sites, extract datasheet specs
                       </p>
                     </div>
@@ -667,8 +667,8 @@ export default function DetectPage() {
                       )} />
                     </div>
                     <div>
-                      <p className="text-xs font-medium">Advanced ML Detection (Level 3)</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-medium">Advanced ML Detection (Level 3)</p>
+                      <p className="text-sm text-muted-foreground">
                         {useRealAI 
                           ? '🟢 Gemini Vision AI: Real OCR + Pattern Recognition' 
                           : '🟡 Rule-Based: Pre-trained matching (demo)'}
@@ -690,10 +690,10 @@ export default function DetectPage() {
                 {useRealAI && (
                   <div className="rounded-lg border border-success/20 bg-success/5 p-3">
                     <div className="mb-2 flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-success" />
-                      <span className="text-sm font-semibold text-success">ML Levels Active</span>
+                      <Sparkles className="h-6 w-6 text-success" />
+                      <span className="text-base font-semibold text-success">ML Levels Active</span>
                     </div>
-                    <div className="space-y-1.5 text-sm text-muted-foreground">
+                    <div className="space-y-1.5 text-base text-muted-foreground">
                       <div className="flex items-start gap-1.5">
                         <span className="font-mono font-bold text-primary">L1:</span>
                         <span>OCR (PaddleOCR/Python) - 99%+ accuracy</span>
@@ -732,7 +732,7 @@ export default function DetectPage() {
                       )}
                     </Button>
                     {isScanning && currentScanStep && (
-                      <p className="text-xs text-muted-foreground animate-pulse font-medium">
+                      <p className="text-sm text-muted-foreground animate-pulse font-medium">
                         {currentScanStep}
                       </p>
                     )}
@@ -743,15 +743,15 @@ export default function DetectPage() {
                 {isScanning && pipelineSteps.length > 0 && (
                   <div className="mt-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
                     <div className="mb-2 flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                      <h4 className="font-semibold text-sm">ML Pipeline</h4>
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      <h4 className="font-semibold text-base">ML Pipeline</h4>
                     </div>
                     <div className="space-y-2">
                       {pipelineSteps.map((step, idx) => (
                         <div 
                           key={idx}
                           className={cn(
-                            'flex items-center gap-2 rounded-md p-2 text-xs transition-all',
+                            'flex items-center gap-2 rounded-md p-2 text-sm transition-all',
                             step.status === 'running' && 'bg-primary/10 border-l-2 border-primary',
                             step.status === 'complete' && 'bg-success/10 border-l-2 border-success',
                             step.status === 'error' && 'bg-destructive/10 border-l-2 border-destructive',
@@ -759,19 +759,19 @@ export default function DetectPage() {
                           )}
                         >
                           {step.status === 'pending' && (
-                            <div className="h-3 w-3 rounded-full border-2 border-muted-foreground/30" />
+                            <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30" />
                           )}
                           {step.status === 'running' && (
-                            <Loader2 className="h-3 w-3 animate-spin text-primary flex-shrink-0" />
+                            <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />
                           )}
                           {step.status === 'complete' && (
-                            <CheckCircle2 className="h-3 w-3 text-success flex-shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
                           )}
                           {step.status === 'error' && (
-                            <XCircle className="h-3 w-3 text-destructive flex-shrink-0" />
+                            <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
                           )}
                           <span className={cn(
-                            'flex-1 text-xs',
+                            'flex-1 text-sm',
                             step.status === 'complete' && 'text-muted-foreground line-through',
                             step.status === 'running' && 'font-medium text-foreground',
                             step.status === 'pending' && 'text-muted-foreground'
@@ -779,7 +779,7 @@ export default function DetectPage() {
                             {step.step}
                           </span>
                           {step.status === 'running' && (
-                            <Badge variant="outline" className="text-[9px] h-4 bg-primary/10 text-primary border-primary/30 px-1.5">
+                            <Badge variant="outline" className="text-xs h-5 bg-primary/10 text-primary border-primary/30 px-2">
                               Processing
                             </Badge>
                           )}
@@ -789,7 +789,7 @@ export default function DetectPage() {
                     
                     {/* Overall Progress Bar */}
                     <div className="mt-2">
-                      <div className="flex items-center justify-between text-[9px] text-muted-foreground mb-0.5">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-0.5">
                         <span>Overall Progress</span>
                         <span className="font-mono font-bold">{scanProgress.toFixed(0)}%</span>
                       </div>
@@ -813,8 +813,8 @@ export default function DetectPage() {
         <section className="container mx-auto px-4 py-4">
           <div className="mx-auto max-w-4xl space-y-3">
             <div className="text-center">
-              <h2 className="mb-1 font-headline text-2xl font-bold">Results</h2>
-              <p className="text-xs text-muted-foreground">ML-powered authenticity analysis</p>
+              <h2 className="mb-1 font-headline text-3xl font-bold">Results</h2>
+              <p className="text-sm text-muted-foreground">ML-powered authenticity analysis</p>
             </div>
 
             {results.map((result, index) => (
@@ -830,14 +830,14 @@ export default function DetectPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="space-y-0.5">
-                      <CardTitle className="flex items-center gap-2 text-sm">
+                      <CardTitle className="flex items-center gap-2 text-base">
                         {uploadedFiles[index].name}
                       </CardTitle>
-                      <CardDescription className="text-[10px]">Batch: {result.batchId}</CardDescription>
+                      <CardDescription className="text-sm">Batch: {result.batchId}</CardDescription>
                     </div>
                     <Badge 
                       variant="outline" 
-                      className={cn('gap-1 px-2 py-0.5 text-xs font-semibold', getVerdictColor(result.verdict))}
+                      className={cn('gap-1 px-2 py-0.5 text-sm font-semibold', getVerdictColor(result.verdict))}
                     >
                       {getVerdictIcon(result.verdict)}
                       {result.verdict}
@@ -848,7 +848,7 @@ export default function DetectPage() {
                   <div className="grid gap-4 md:grid-cols-2">
                     {/* Image Preview */}
                     <div>
-                      <h4 className="mb-1.5 text-xs font-semibold text-muted-foreground">IC Image</h4>
+                      <h4 className="mb-1.5 text-sm font-semibold text-muted-foreground">IC Image</h4>
                       <img
                         src={previews[index]}
                         alt={`Result ${index + 1}`}
@@ -859,8 +859,8 @@ export default function DetectPage() {
                     {/* OCR Markings */}
                     <div className="space-y-3">
                       <div>
-                        <h4 className="mb-1.5 text-xs font-semibold text-muted-foreground">OCR Extracted</h4>
-                        <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5 font-mono text-[10px]">
+                        <h4 className="mb-1.5 text-sm font-semibold text-muted-foreground">OCR Extracted</h4>
+                        <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5 font-mono text-sm">
                           {result.ocrMarkings.split('\n').map((line, i) => (
                             <div 
                               key={i}
@@ -877,11 +877,11 @@ export default function DetectPage() {
 
                       {/* Authenticity Score */}
                       <div>
-                        <h4 className="mb-1.5 text-xs font-semibold text-muted-foreground">Authenticity</h4>
+                        <h4 className="mb-1.5 text-sm font-semibold text-muted-foreground">Authenticity</h4>
                         <div className="space-y-1.5">
-                          <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center justify-between text-sm">
                             <span className="font-mono font-bold">{result.authenticityScore}%</span>
-                            <span className="text-[10px] text-muted-foreground">Confidence</span>
+                            <span className="text-sm text-muted-foreground">Confidence</span>
                           </div>
                           <div className="h-2 overflow-hidden rounded-full bg-muted/50">
                             <div
@@ -902,20 +902,20 @@ export default function DetectPage() {
                   {/* Text Comparison: OCR vs OEM Datasheet */}
                   {result.oemDatasheetMarkings && (
                     <div>
-                      <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                        <Database className="h-4 w-4" />
+                      <h4 className="mb-3 flex items-center gap-2 text-base font-semibold text-muted-foreground">
+                        <Database className="h-5 w-5" />
                         OCR vs OEM Datasheet Comparison
                       </h4>
                       <div className="grid gap-4 md:grid-cols-2">
                         {/* OCR Extracted Text */}
                         <div className="rounded-lg border border-border/50 bg-muted/20 p-3">
                           <div className="mb-2 flex items-center justify-between">
-                            <span className="text-xs font-semibold text-muted-foreground uppercase">Extracted from IC</span>
-                            <Badge variant="outline" className="text-xs px-2 py-0.5 bg-blue-500/10 text-blue-600 border-blue-500/30">
+                            <span className="text-sm font-semibold text-muted-foreground uppercase">Extracted from IC</span>
+                            <Badge variant="outline" className="text-sm px-2 py-0.5 bg-blue-500/10 text-blue-600 border-blue-500/30">
                               OCR Result
                             </Badge>
                           </div>
-                          <div className="font-mono text-sm space-y-1 leading-relaxed">
+                          <div className="font-mono text-base space-y-1 leading-relaxed">
                             {result.ocrMarkings.split('\n').map((line, i) => {
                               const oem = result.oemDatasheetMarkings?.split('\n') || [];
                               const oemNormalized = oem.join(' ');
@@ -932,7 +932,7 @@ export default function DetectPage() {
                                     isDifferent && result.verdict === 'Fake' && 'bg-destructive/20 text-destructive font-semibold border-l-2 border-destructive'
                                   )}
                                 >
-                                  {line || <span className="text-muted-foreground italic text-xs">(empty)</span>}
+                                  {line || <span className="text-muted-foreground italic text-sm">(empty)</span>}
                                 </div>
                               );
                             })}
@@ -942,12 +942,12 @@ export default function DetectPage() {
                         {/* OEM Datasheet Text */}
                         <div className="rounded-lg border border-border/50 bg-muted/20 p-3">
                           <div className="mb-2 flex items-center justify-between">
-                            <span className="text-xs font-semibold text-muted-foreground uppercase">Expected from Datasheet</span>
-                            <Badge variant="outline" className="text-xs px-2 py-0.5 bg-success/10 text-success border-success/30">
+                            <span className="text-sm font-semibold text-muted-foreground uppercase">Expected from Datasheet</span>
+                            <Badge variant="outline" className="text-sm px-2 py-0.5 bg-success/10 text-success border-success/30">
                               OEM Reference
                             </Badge>
                           </div>
-                          <div className="font-mono text-sm space-y-1 leading-relaxed">
+                          <div className="font-mono text-base space-y-1 leading-relaxed">
                             {result.oemDatasheetMarkings.split('\n').map((line, i) => {
                               const oem = result.oemDatasheetMarkings?.split('\n') || [];
                               const oemNormalized = oem.join(' ');
@@ -963,7 +963,7 @@ export default function DetectPage() {
                                     isDifferent && result.verdict === 'Fake' && 'bg-success/20 text-success font-semibold border-l-2 border-success'
                                   )}
                                 >
-                                  {line || <span className="text-muted-foreground italic text-xs">(empty)</span>}
+                                  {line || <span className="text-muted-foreground italic text-sm">(empty)</span>}
                                 </div>
                               );
                             })}
@@ -975,10 +975,10 @@ export default function DetectPage() {
                       {result.verdict !== 'Genuine' && (
                         <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
                           <div className="flex items-start gap-2">
-                            <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                            <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
                             <div className="space-y-1">
-                              <p className="font-semibold text-destructive text-sm">⚠️ Discrepancies Detected</p>
-                              <p className="text-muted-foreground text-xs">
+                              <p className="font-semibold text-destructive text-base">⚠️ Discrepancies Detected</p>
+                              <p className="text-muted-foreground text-sm">
                                 {result.reasoning.split('.')[0]}. Marking comparison shows inconsistencies with official OEM specifications.
                               </p>
                             </div>
@@ -989,8 +989,8 @@ export default function DetectPage() {
                       {result.verdict === 'Genuine' && (
                         <div className="mt-3 rounded-lg border border-success/30 bg-success/5 p-3">
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
-                            <p className="text-success text-sm font-medium">✓ All markings match OEM datasheet specifications</p>
+                            <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
+                            <p className="text-success text-base font-medium">✓ All markings match OEM datasheet specifications</p>
                           </div>
                         </div>
                       )}
@@ -1000,33 +1000,33 @@ export default function DetectPage() {
                   {/* Web Search Results */}
                   {result.webSearchData && (
                     <div>
-                      <h4 className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                        <Globe className="h-3.5 w-3.5" />
+                      <h4 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                        <Globe className="h-5 w-5" />
                         Web Search & NLP
                       </h4>
                       <div className="space-y-2 rounded-lg border border-border/40 bg-muted/20 p-2.5">
                         {/* Search Process Steps */}
                         <div className="space-y-1.5 pb-2 border-b border-border/30">
-                          <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-1">Pipeline Steps</p>
+                          <p className="text-sm font-semibold text-muted-foreground uppercase mb-1">Pipeline Steps</p>
                           <div className="space-y-1">
-                            <div className="flex items-center gap-1.5 text-[9px]">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                               <span className="text-muted-foreground">1. OCR: Identified part → <span className="font-mono text-foreground">{result.webSearchData.officialSource}</span></span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-[9px]">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                               <span className="text-muted-foreground">2. Web Scraping: Queried OEM site</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-[9px]">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                               <span className="text-muted-foreground">3. Download: Fetched datasheet PDF</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-[9px]">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                               <span className="text-muted-foreground">4. NLP Parsing: Extracted marking specs</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-[9px]">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                               <span className="text-muted-foreground">5. ML Comparison: Pattern-matched</span>
                             </div>
                           </div>
@@ -1035,33 +1035,33 @@ export default function DetectPage() {
                         {/* Found Source */}
                         <div className="flex items-start justify-between">
                           <div className="space-y-0.5">
-                            <p className="text-xs font-medium">OEM Source</p>
-                            <p className="text-[10px] text-muted-foreground">{result.webSearchData.officialSource}</p>
+                            <p className="text-sm font-medium">OEM Source</p>
+                            <p className="text-sm text-muted-foreground">{result.webSearchData.officialSource}</p>
                           </div>
-                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-[9px] px-1.5 py-0">
-                            <Database className="mr-1 h-2.5 w-2.5" />
+                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 text-xs px-2 py-0.5">
+                            <Database className="mr-1 h-3.5 w-3.5" />
                             {result.webSearchData.searchConfidence}% Match
                           </Badge>
                         </div>
                         
                         {result.webSearchData.datasheetUrl && (
                           <div className="pt-1.5 border-t border-border/30">
-                            <p className="text-[10px] text-muted-foreground mb-1">Datasheet:</p>
+                            <p className="text-sm text-muted-foreground mb-1">Datasheet:</p>
                             <a 
                               href={result.webSearchData.datasheetUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="group flex items-center gap-1.5 text-[10px] text-primary hover:underline"
+                              className="group flex items-center gap-1.5 text-sm text-primary hover:underline"
                             >
-                              <Globe className="h-3 w-3 flex-shrink-0" />
+                              <Globe className="h-4 w-4 flex-shrink-0" />
                               <span className="flex-1 truncate">{result.webSearchData.datasheetUrl}</span>
                               <span className="opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
                             </a>
                           </div>
                         )}
 
-                        <div className="flex items-center gap-1.5 pt-1.5 text-[9px] text-muted-foreground bg-success/5 rounded p-1.5">
-                          <CheckCircle2 className="h-2.5 w-2.5 text-success flex-shrink-0" />
+                        <div className="flex items-center gap-1.5 pt-1.5 text-xs text-muted-foreground bg-success/5 rounded p-1.5">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
                           <span>Verified against OEM docs</span>
                         </div>
                       </div>
@@ -1070,11 +1070,11 @@ export default function DetectPage() {
 
                   {/* AI Reasoning */}
                   <div>
-                    <h4 className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                      <AlertTriangle className="h-3.5 w-3.5" />
+                    <h4 className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                      <AlertTriangle className="h-5 w-5" />
                       ML Analysis
                     </h4>
-                    <p className="rounded-lg border border-border/40 bg-muted/20 p-2.5 text-[10px] leading-relaxed">
+                    <p className="rounded-lg border border-border/40 bg-muted/20 p-2.5 text-sm leading-relaxed">
                       {result.reasoning}
                     </p>
                   </div>
@@ -1084,12 +1084,12 @@ export default function DetectPage() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="flex-1 text-xs h-8"
+                      className="flex-1 text-sm h-10"
                       onClick={() => router.push(`/dashboard/report/${result.batchId}`)}
                     >
                       View Report
                     </Button>
-                    <Button variant="outline" size="sm" className="text-xs h-8">
+                    <Button variant="outline" size="sm" className="text-sm h-10">
                       Export PDF
                     </Button>
                   </div>
@@ -1104,18 +1104,18 @@ export default function DetectPage() {
       <section className="border-t border-border/40 bg-muted/20 py-6">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
-            <h2 className="mb-3 text-center font-headline text-lg font-bold">How It Works</h2>
+            <h2 className="mb-3 text-center font-headline text-2xl font-bold">How It Works</h2>
             
             <div className="grid gap-3 md:grid-cols-3">
               <Card className="text-center">
                 <CardContent className="pt-3 pb-3">
                   <div className="mb-2 flex justify-center">
                     <div className="rounded-full bg-primary/10 p-2">
-                      <Upload className="h-5 w-5 text-primary" />
+                      <Upload className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <h3 className="mb-1 text-xs font-semibold">1. Upload</h3>
-                  <p className="text-[10px] text-muted-foreground">
+                  <h3 className="mb-1 text-sm font-semibold">1. Upload</h3>
+                  <p className="text-sm text-muted-foreground">
                     Upload IC marking images
                   </p>
                 </CardContent>
@@ -1125,11 +1125,11 @@ export default function DetectPage() {
                 <CardContent className="pt-3 pb-3">
                   <div className="mb-2 flex justify-center">
                     <div className="rounded-full bg-primary/10 p-2">
-                      <Scan className="h-5 w-5 text-primary" />
+                      <Scan className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <h3 className="mb-1 text-xs font-semibold">2. ML Pipeline</h3>
-                  <p className="text-[10px] text-muted-foreground">
+                  <h3 className="mb-1 text-sm font-semibold">2. ML Pipeline</h3>
+                  <p className="text-sm text-muted-foreground">
                     OCR → Web scraping → NLP → Pattern matching
                   </p>
                 </CardContent>
@@ -1139,11 +1139,11 @@ export default function DetectPage() {
                 <CardContent className="pt-3 pb-3">
                   <div className="mb-2 flex justify-center">
                     <div className="rounded-full bg-primary/10 p-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      <CheckCircle2 className="h-6 w-6 text-primary" />
                     </div>
                   </div>
-                  <h3 className="mb-1 text-xs font-semibold">3. Results</h3>
-                  <p className="text-[10px] text-muted-foreground">
+                  <h3 className="mb-1 text-sm font-semibold">3. Results</h3>
+                  <p className="text-sm text-muted-foreground">
                     Authenticity verdict with reasoning
                   </p>
                 </CardContent>
