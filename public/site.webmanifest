@@ -9,10 +9,6 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "categories": ["productivity", "utilities"],
-  "permissions": [
-    "camera",
-    "storage"
-  ],
   "icons": [
     {
       "src": "/app_icon.png",

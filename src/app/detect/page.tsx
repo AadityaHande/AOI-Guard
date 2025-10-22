@@ -126,17 +126,98 @@ export default function DetectPage() {
   // Camera functions
   const startCamera = async () => {
     try {
+      // First check if mediaDevices is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Camera is not supported on this device or browser.');
+        return;
+      }
+
+      // Request camera permission and start stream
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } // Use back camera on mobile
+        video: { 
+          facingMode: 'environment', // Use back camera on mobile
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        } 
       });
+      
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
       }
       setShowCamera(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error accessing camera:', error);
-      alert('Unable to access camera. Please ensure camera permissions are granted.');
+      
+      // More specific error messages
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        alert('Camera permission was denied. Please:\n\n' +
+              '1. Click the lock/info icon in your browser address bar\n' +
+              '2. Allow camera permissions for this site\n' +
+              '3. Refresh the page and try again\n\n' +
+              'On mobile: Check your browser settings → Site permissions → Camera');
+      } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+        alert('No camera found on this device.');
+      } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+        alert('Camera is already in use by another application. Please close other apps using the camera and try again.');
+      } else if (error.name === 'OverconstrainedError') {
+        // Fallback: Try again with less strict constraints
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: true 
+          });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            streamRef.current = stream;
+          }
+          setShowCamera(true);
+        } catch (fallbackError) {
+          alert('Unable to access camera with current settings.');
+        }
+      } else {
+        alert('Unable to access camera: ' + error.message);
+      }
+    }
+  };
+
+  // Check camera permission using Permissions API where available
+  const checkCameraPermission = async () => {
+    try {
+      if (navigator.permissions && (navigator.permissions as any).query) {
+        // Some browsers accept name: 'camera' (Chrome/Edge). Use a try/catch as it's not universal.
+        try {
+          const status = await (navigator.permissions as any).query({ name: 'camera' });
+          const state = status.state as string;
+          alert(`Camera permission status: ${state}\n\nIf status is 'prompt' or 'denied', open your browser site settings to allow camera access.`);
+          // Attach onchange to update if user changes permission in settings
+          status.onchange = () => {
+            alert(`Camera permission changed to: ${status.state}`);
+          };
+          return;
+        } catch (e) {
+          // permission name may not be supported, fallthrough to enumerateDevices fallback
+        }
+      }
+
+      // Fallback: try to detect by enumerating devices. If device labels are empty, permission likely not granted.
+      if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const hasVideoInput = devices.some(d => d.kind === 'videoinput');
+        const labelsVisible = devices.some(d => !!(d as any).label);
+        if (!hasVideoInput) {
+          alert('No camera found on this device.');
+        } else if (labelsVisible) {
+          alert('Camera permission appears to be granted.');
+        } else {
+          alert('Camera permission not granted or blocked. Please open your browser site settings and allow camera access for this site, then refresh.');
+        }
+        return;
+      }
+
+      alert('Unable to determine camera permission on this browser. Try opening camera to trigger permission prompt.');
+    } catch (err) {
+      console.error('checkCameraPermission error:', err);
+      alert('Could not check camera permissions on this browser.');
     }
   };
 
@@ -581,7 +662,16 @@ export default function DetectPage() {
                   </div>
                   
                   <div className="flex gap-2 mt-1">
-                    <Button variant="outline" type="button" size="sm" className="h-10 text-sm" onClick={(e) => { e.stopPropagation(); startCamera(); }}>
+                    <Button 
+                      variant="outline" 
+                      type="button" 
+                      size="sm" 
+                      className="h-10 text-sm" 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        startCamera(); 
+                      }}
+                    >
                       <Camera className="mr-1.5 h-4 w-4" />
                       Open Camera
                     </Button>
@@ -590,6 +680,10 @@ export default function DetectPage() {
                       Browse Files
                     </Button>
                   </div>
+                  
+                  <p className="text-xs text-muted-foreground mt-2">
+                    📱 Note: Camera permissions are granted through your browser, not Android app settings
+                  </p>
                 </div>
               </div>
             )}
