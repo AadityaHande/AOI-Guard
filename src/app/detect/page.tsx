@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AnimatedIcon } from '@/components/animated-icon';
-import { Upload, Scan, CheckCircle2, XCircle, AlertTriangle, Loader2, FileImage, X, Globe, Database, Sparkles, Home } from 'lucide-react';
+import { Upload, Scan, CheckCircle2, XCircle, AlertTriangle, Loader2, FileImage, X, Globe, Database, Sparkles, Home, Camera } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { sampleICs, type SampleIC, generateSampleImageDataUri, getSampleIC } from '@/lib/sample-ics';
 import { detectICAuthenticity } from '@/ai/flows/ic-detection';
@@ -46,6 +46,9 @@ export default function DetectPage() {
     status: 'pending' | 'running' | 'complete' | 'error';
     timestamp?: number;
   }>>([]);
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setUploadedFiles(acceptedFiles);
@@ -119,6 +122,55 @@ export default function DetectPage() {
     setSelectedSampleICs(sampleICs.map(ic => ic.id));
     setResults([]);
   }, []);
+
+  // Camera functions
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } // Use back camera on mobile
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+      }
+      setShowCamera(true);
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please ensure camera permissions are granted.');
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setShowCamera(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(videoRef.current, 0, 0);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], `capture-${Date.now()}.jpg`, { type: 'image/jpeg' });
+            const preview = URL.createObjectURL(blob);
+            
+            setUploadedFiles([file]);
+            setPreviews([preview]);
+            setSelectedSampleICs([]);
+            setResults([]);
+            stopCamera();
+          }
+        }, 'image/jpeg', 0.95);
+      }
+    }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -497,7 +549,7 @@ export default function DetectPage() {
             )}
 
             {/* Dropzone - Compact */}
-            {uploadedFiles.length === 0 && (
+            {uploadedFiles.length === 0 && !showCamera && (
               <div
                 {...getRootProps()}
                 className={cn(
@@ -524,15 +576,55 @@ export default function DetectPage() {
                       {isDragActive ? 'Drop files here' : 'Drag & drop IC images'}
                     </p>
                     <p className="mt-0.5 text-sm text-muted-foreground">
-                      or click to browse
+                      or use camera / browse files
                     </p>
                   </div>
                   
-                  <Button variant="outline" type="button" size="sm" className="mt-1 h-10 text-sm">
-                    <Upload className="mr-1.5 h-4 w-4" />
-                    Browse Files
-                  </Button>
+                  <div className="flex gap-2 mt-1">
+                    <Button variant="outline" type="button" size="sm" className="h-10 text-sm" onClick={(e) => { e.stopPropagation(); startCamera(); }}>
+                      <Camera className="mr-1.5 h-4 w-4" />
+                      Open Camera
+                    </Button>
+                    <Button variant="outline" type="button" size="sm" className="h-10 text-sm">
+                      <Upload className="mr-1.5 h-4 w-4" />
+                      Browse Files
+                    </Button>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {/* Camera View */}
+            {showCamera && (
+              <div className="space-y-3">
+                <div className="relative overflow-hidden rounded-lg border border-border/40 bg-black">
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
+                    <Button
+                      size="lg"
+                      onClick={capturePhoto}
+                      className="rounded-full h-16 w-16 p-0"
+                    >
+                      <Camera className="h-6 w-6" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="lg"
+                      onClick={stopCamera}
+                      className="rounded-full h-16 w-16 p-0"
+                    >
+                      <X className="h-6 w-6" />
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-sm text-center text-muted-foreground">
+                  Position the IC chip in frame and tap the camera button to capture
+                </p>
               </div>
             )}
 

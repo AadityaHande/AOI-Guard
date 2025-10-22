@@ -7,6 +7,12 @@
   "background_color": "#0a0a0a",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["productivity", "utilities"],
+  "permissions": [
+    "camera",
+    "storage"
+  ],
   "icons": [
     {
       "src": "/app_icon.png",
@@ -19,6 +25,13 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot.png",
+      "sizes": "540x720",
+      "type": "image/png"
     }
   ]
 }
