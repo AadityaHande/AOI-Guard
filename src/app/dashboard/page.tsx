@@ -1,36 +1,98 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { BatchSummary } from '@/components/dashboard/batch-summary';
 import { RecentScansTable } from '@/components/dashboard/recent-scans-table';
 import { AlertsPanel } from '@/components/dashboard/alerts-panel';
 import { UploadCard } from '@/components/dashboard/upload-card';
 import { FloatingActions } from '@/components/floating-actions';
-import { useState, useEffect } from 'react';
-import { summaryData as initialSummary, recentScans as initialRecentScans, alerts as initialAlerts, verdictData as initialVerdictData, trendData } from "@/lib/data";
-import { getRecentScansForDashboard } from '@/lib/scan-storage';
+import { getRecentScansForDashboard, getStoredScans } from '@/lib/scan-storage';
 import { BatchScanAndSummaryOutput } from '@/ai/flows/batch-scan-summary';
 import { AnalyticsCharts } from '@/components/dashboard/analytics/analytics-charts';
+import type { Scan } from '@/lib/data';
+
+interface Alert {
+  id: number;
+  type: 'Fake' | 'Suspicious';
+  message: string;
+  time: string;
+}
 
 export default function DashboardPage() {
-  const [summaryData, setSummaryData] = useState(initialSummary);
-  const [recentScans, setRecentScans] = useState(initialRecentScans);
-  const [alerts, setAlerts] = useState(initialAlerts);
-  const [verdictData, setVerdictData] = useState(initialVerdictData);
+  const [summaryData, setSummaryData] = useState({
+    totalScanned: 0,
+    genuine: 0,
+    fake: 0,
+    suspicious: 0,
+    avgAuthenticity: 0,
+  });
+  const [recentScans, setRecentScans] = useState<Scan[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [verdictData, setVerdictData] = useState<Array<{ verdict: string; count: number; fill: string }>>([
+    { verdict: 'Genuine', count: 0, fill: "hsl(var(--success))" },
+    { verdict: 'Fake', count: 0, fill: "hsl(var(--destructive))" },
+    { verdict: 'Suspicious', count: 0, fill: "hsl(var(--suspicious))" },
+  ]);
+  const [trendData, setTrendData] = useState<Array<{ date: string; score: number }>>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     
-    // Load recent scans from storage (detect page results)
-    const storedScans = getRecentScansForDashboard();
+    // Load real scans from localStorage
+    const storedScans = getStoredScans();
+    
     if (storedScans.length > 0) {
-      // Merge stored scans with initial scans, stored scans first (most recent)
-      setRecentScans([...storedScans, ...initialRecentScans]);
+      // Calculate summary statistics
+      const genuineCount = storedScans.filter(s => s.verdict === 'Genuine').length;
+      const fakeCount = storedScans.filter(s => s.verdict === 'Fake').length;
+      const suspiciousCount = storedScans.filter(s => s.verdict === 'Suspicious').length;
+      const avgScore = storedScans.reduce((sum, s) => sum + s.score, 0) / storedScans.length;
+      
+      setSummaryData({
+        totalScanned: storedScans.length,
+        genuine: genuineCount,
+        fake: fakeCount,
+        suspicious: suspiciousCount,
+        avgAuthenticity: avgScore,
+      });
+
+      // Update verdict distribution
+      setVerdictData([
+        { verdict: 'Genuine', count: genuineCount, fill: "hsl(var(--success))" },
+        { verdict: 'Fake', count: fakeCount, fill: "hsl(var(--destructive))" },
+        { verdict: 'Suspicious', count: suspiciousCount, fill: "hsl(var(--suspicious))" },
+      ]);
+
+      // Calculate trend data
+      const scansWithDates = storedScans.map(scan => ({
+        ...scan,
+        date: new Date(scan.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      }));
+
+      const groupedByDate = scansWithDates.reduce((acc, scan) => {
+        if (!acc[scan.date]) {
+          acc[scan.date] = [];
+        }
+        acc[scan.date].push(scan);
+        return acc;
+      }, {} as Record<string, typeof scansWithDates>);
+
+      const trends = Object.entries(groupedByDate).map(([date, scans]) => ({
+        date,
+        score: scans.reduce((sum, s) => sum + s.score, 0) / scans.length,
+      }));
+
+      setTrendData(trends);
+
+      // Get recent scans for table
+      const dashboardScans = getRecentScansForDashboard();
+      setRecentScans(dashboardScans);
       
       // Create alerts for recent fake/suspicious detections
-      const recentAlerts = storedScans
+      const recentAlerts = dashboardScans
         .filter(scan => scan.status === 'Fake' || scan.status === 'Suspicious')
-        .slice(0, 3) // Only show top 3 most recent
+        .slice(0, 5) // Only show top 5 most recent
         .map((scan, index) => ({
           id: Date.now() + index,
           type: scan.status as 'Fake' | 'Suspicious',
@@ -40,9 +102,7 @@ export default function DashboardPage() {
           time: scan.time,
         }));
       
-      if (recentAlerts.length > 0) {
-        setAlerts([...recentAlerts, ...initialAlerts]);
-      }
+      setAlerts(recentAlerts);
     }
   }, []);
 

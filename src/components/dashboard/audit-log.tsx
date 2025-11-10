@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,127 +9,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   FileText, 
-  Upload, 
   Download, 
-  Settings, 
-  User, 
-  Shield, 
-  RefreshCw,
   Search,
-  Filter,
-  Calendar
+  User,
+  Calendar,
+  Shield
 } from 'lucide-react';
+import { getStoredScans, type StoredScan } from '@/lib/scan-storage';
 
 interface AuditLogEntry {
   id: string;
   timestamp: string;
   user: string;
   action: string;
-  category: 'scan' | 'upload' | 'export' | 'settings' | 'auth' | 'model';
+  category: 'scan';
   details: string;
-  status: 'success' | 'failed' | 'warning';
+  status: 'success' | 'warning' | 'failed';
   ipAddress?: string;
+  verdict?: string;
 }
-
-const mockLogs: AuditLogEntry[] = [
-  {
-    id: 'log-001',
-    timestamp: '2024-01-17 14:32:15',
-    user: 'John Doe',
-    action: 'Batch Scan Completed',
-    category: 'scan',
-    details: 'Scanned 150 IC images in BATCH-2024-001',
-    status: 'success',
-    ipAddress: '192.168.1.100',
-  },
-  {
-    id: 'log-002',
-    timestamp: '2024-01-17 14:15:42',
-    user: 'Jane Smith',
-    action: 'OEM Data Upload',
-    category: 'upload',
-    details: 'Uploaded 25 reference images for STM32F407',
-    status: 'success',
-    ipAddress: '192.168.1.101',
-  },
-  {
-    id: 'log-003',
-    timestamp: '2024-01-17 13:48:23',
-    user: 'Admin User',
-    action: 'Model Retraining',
-    category: 'model',
-    details: 'Triggered model retraining with 500 new samples',
-    status: 'success',
-    ipAddress: '192.168.1.1',
-  },
-  {
-    id: 'log-004',
-    timestamp: '2024-01-17 13:22:11',
-    user: 'John Doe',
-    action: 'Export Analytics',
-    category: 'export',
-    details: 'Exported analytics data to CSV format',
-    status: 'success',
-    ipAddress: '192.168.1.100',
-  },
-  {
-    id: 'log-005',
-    timestamp: '2024-01-17 12:55:37',
-    user: 'Unknown',
-    action: 'Failed Login Attempt',
-    category: 'auth',
-    details: 'Invalid credentials for user "admin"',
-    status: 'failed',
-    ipAddress: '203.0.113.45',
-  },
-  {
-    id: 'log-006',
-    timestamp: '2024-01-17 12:30:18',
-    user: 'Admin User',
-    action: 'Settings Updated',
-    category: 'settings',
-    details: 'Changed confidence threshold to 85%',
-    status: 'success',
-    ipAddress: '192.168.1.1',
-  },
-  {
-    id: 'log-007',
-    timestamp: '2024-01-17 11:45:52',
-    user: 'Jane Smith',
-    action: 'Batch Scan Completed',
-    category: 'scan',
-    details: 'Scanned 200 IC images in BATCH-2024-002',
-    status: 'success',
-    ipAddress: '192.168.1.101',
-  },
-  {
-    id: 'log-008',
-    timestamp: '2024-01-17 11:12:33',
-    user: 'John Doe',
-    action: 'OEM Data Upload',
-    category: 'upload',
-    details: 'Upload failed due to invalid file format',
-    status: 'failed',
-    ipAddress: '192.168.1.100',
-  },
-];
-
-const categoryIcons = {
-  scan: FileText,
-  upload: Upload,
-  export: Download,
-  settings: Settings,
-  auth: Shield,
-  model: RefreshCw,
-};
 
 const categoryColors = {
   scan: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  upload: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
-  export: 'bg-green-500/10 text-green-500 border-green-500/20',
-  settings: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-  auth: 'bg-red-500/10 text-red-500 border-red-500/20',
-  model: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
 };
 
 const statusColors = {
@@ -140,19 +41,62 @@ const statusColors = {
 
 export function AuditLog() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [logs, setLogs] = useState<AuditLogEntry[]>([]);
 
-  const filteredLogs = mockLogs.filter((log) => {
+  useEffect(() => {
+    // Load real scan data from localStorage
+    const scans = getStoredScans();
+    
+    const auditLogs: AuditLogEntry[] = scans.map((scan: StoredScan) => {
+      const date = new Date(scan.timestamp);
+      const status = scan.verdict === 'Fake' ? 'failed' : scan.verdict === 'Suspicious' ? 'warning' : 'success';
+      
+      let actionText = 'IC Scan Completed';
+      let details = `Scanned IC chip in batch ${scan.batchId}`;
+      
+      if (scan.verdict === 'Fake') {
+        details = `COUNTERFEIT DETECTED in ${scan.batchId} - ${scan.partNumber || 'Unknown part'}. Score: ${scan.score}%`;
+      } else if (scan.verdict === 'Suspicious') {
+        details = `Suspicious markings detected in ${scan.batchId} - ${scan.partNumber || 'Unknown part'}. Score: ${scan.score}%`;
+      } else {
+        details = `Genuine IC verified in ${scan.batchId} - ${scan.partNumber || 'Unknown part'}. Score: ${scan.score}%`;
+      }
+      
+      return {
+        id: scan.batchId,
+        timestamp: date.toLocaleString('en-US', { 
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }),
+        user: scan.operator,
+        action: actionText,
+        category: 'scan' as const,
+        details,
+        status,
+        verdict: scan.verdict,
+        ipAddress: '192.168.1.100', // Demo IP
+      };
+    });
+    
+    setLogs(auditLogs);
+  }, []);
+
+  const filteredLogs = logs.filter((log) => {
     const matchesSearch =
       log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
       log.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.details.toLowerCase().includes(searchQuery.toLowerCase());
+      log.details.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.id.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesCategory = categoryFilter === 'all' || log.category === categoryFilter;
     const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -165,7 +109,7 @@ export function AuditLog() {
               Audit Log
             </CardTitle>
             <CardDescription>
-              Comprehensive system activity tracking and monitoring
+              Real-time scan activity tracking and monitoring
             </CardDescription>
           </div>
           <Button variant="outline" size="sm" className="gap-2">
@@ -186,29 +130,15 @@ export function AuditLog() {
               className="pl-9 bg-background/50"
             />
           </div>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full sm:w-[180px] bg-background/50">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="scan">Scans</SelectItem>
-              <SelectItem value="upload">Uploads</SelectItem>
-              <SelectItem value="export">Exports</SelectItem>
-              <SelectItem value="settings">Settings</SelectItem>
-              <SelectItem value="auth">Authentication</SelectItem>
-              <SelectItem value="model">Model</SelectItem>
-            </SelectContent>
-          </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-[180px] bg-background/50">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="success">Success</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="warning">Warning</SelectItem>
+              <SelectItem value="success">Genuine</SelectItem>
+              <SelectItem value="warning">Suspicious</SelectItem>
+              <SelectItem value="failed">Fake</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -219,11 +149,11 @@ export function AuditLog() {
             {filteredLogs.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>No logs found matching your criteria</p>
+                <p className="font-medium mb-1">No scan activity yet</p>
+                <p className="text-sm">Start scanning IC chips to see audit logs here</p>
               </div>
             ) : (
               filteredLogs.map((log) => {
-                const Icon = categoryIcons[log.category];
                 return (
                   <div
                     key={log.id}
@@ -231,13 +161,13 @@ export function AuditLog() {
                   >
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${categoryColors[log.category]}`}>
-                        <Icon className="h-4 w-4" />
+                        <FileText className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h4 className="font-semibold text-sm">{log.action}</h4>
                           <Badge variant="outline" className={`${statusColors[log.status]} text-xs`}>
-                            {log.status}
+                            {log.verdict}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -272,20 +202,20 @@ export function AuditLog() {
         <div className="pt-4 border-t border-border/40">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-primary">{mockLogs.length}</div>
-              <div className="text-xs text-muted-foreground">Total Entries</div>
+              <div className="text-2xl font-bold text-primary">{logs.length}</div>
+              <div className="text-xs text-muted-foreground">Total Scans</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-500">
-                {mockLogs.filter(l => l.status === 'success').length}
+                {logs.filter(l => l.status === 'success').length}
               </div>
-              <div className="text-xs text-muted-foreground">Successful</div>
+              <div className="text-xs text-muted-foreground">Genuine</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-red-500">
-                {mockLogs.filter(l => l.status === 'failed').length}
+                {logs.filter(l => l.status === 'failed').length}
               </div>
-              <div className="text-xs text-muted-foreground">Failed</div>
+              <div className="text-xs text-muted-foreground">Fake</div>
             </div>
           </div>
         </div>

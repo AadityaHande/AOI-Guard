@@ -38,8 +38,33 @@ yarn-error.log*
 next-env.d.ts
 
 .genkit/*
-.env*
+.env.local
+.env*.local
+
+# Keep .env.example in version control
+!.env.example
 
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# logs
+logs
+*.log
+
+# test coverage
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
